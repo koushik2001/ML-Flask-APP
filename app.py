@@ -7,13 +7,10 @@ from sklearn.metrics import accuracy_score
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import GridSearchCV
-import nltk
 import regex
 import joblib
-nltk.download(['punkt', 'wordnet'])
 
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
+
 
 app = Flask(__name__)
 
@@ -65,17 +62,14 @@ def predict():
 
     X = X.apply(clean_text)
 
-    def tokenize(text):
+   def tokenize(text):
         text = regex.sub(r'[^\w\s]','',text)
-        tokens = word_tokenize(text)
-        lemmatizer = WordNetLemmatizer()
+        special_characters = ['!','"','#','$','%','&','(',')','*','+','/',':',';','<','=','>','@','[','\\',']','^','`','{','|','}','~','\t']
+        for i in special_characters : 
+            text = text.replace(i, '')
+        tokens = text.split()
 
-        clean_tokens = []
-        for token in tokens:
-            clean_token = lemmatizer.lemmatize(token).lower().strip()
-            clean_tokens.append(clean_token)
-
-        return clean_tokens
+        return tokens
 
 
 
